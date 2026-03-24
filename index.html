@@ -1,88 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 1.6 Skins - Cloud System</title>
+    <style>
+        :root {
+            --bg-color: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --text-color: #eeeeee;
+            --accent-color: #ff9d00;
+            --border-color: #333;
+            --meta-color: #888;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* HEADER & AUTH */
+        header {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            flex-grow: 1;
+            max-width: 400px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: white;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-color);
+            background: #333;
+        }
+
+        .user-info { text-align: right; line-height: 1.2; }
+        .user-name { font-weight: bold; font-size: 0.9rem; display: block; }
+        .user-role { font-size: 0.75rem; color: var(--accent-color); }
+
+        /* КНОПКИ */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-login { background: var(--accent-color); color: #000; }
+        .btn-admin { background: #333; color: #fff; border: 1px solid #444; }
+
+        /* ГАЛЕРЕЯ И ПАК */
+        .content-wrapper { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+        
+        .pack-card {
+            display: flex;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .gallery-side {
+            flex: 2.5;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: var(--border-color);
+        }
+
+        .main-img { grid-column: span 3; width: 100%; height: 400px; object-fit: cover; }
+        .sub-img { width: 100%; height: 130px; object-fit: cover; }
+
+        .info-side {
+            flex: 1;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .pack-title { font-size: 1.5rem; color: white; margin-bottom: 15px; }
+
+        .download-btn {
+            background: var(--accent-color);
+            color: #000;
+            text-align: center;
+            padding: 15px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: auto;
+        }
+
+        /* АДМИН ПАНЕЛЬ */
+        .admin-panel {
+            max-width: 1200px; margin: 0 auto 20px;
+            background: #222; padding: 20px; border-radius: 12px;
+            display: none; border: 1px solid var(--accent-color);
+        }
+
+        .admin-panel input { padding: 10px; margin: 5px; background: #333; color: white; border: 1px solid #444; border-radius: 5px; }
+
+        /* МОДАЛКА */
+        #authModal {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #1a1a1a; padding: 30px; border-radius: 15px; border: 1px solid var(--accent-color); z-index: 1000;
+        }
+
+        @media (max-width: 900px) { .pack-card { flex-direction: column; } .info-side { border-left: none; } }
+    </style>
+</head>
+<body>
+
 <header>
     <h1>CS 1.6 SKINS</h1>
-    <div class="controls">
-        <input type="text" id="searchInput" placeholder="Поиск..." onkeyup="search()">
-        <div id="authSection" style="display: inline-block; margin-left: 10px;">
-            <button class="theme-btn" id="loginBtn" onclick="toggleAuthModal()">Войти</button>
-            <span id="userEmail" style="display:none; margin-right: 10px; font-weight: bold;"></span>
-            <button class="theme-btn" id="logoutBtn" style="display:none; background:#ff4444;" onclick="handleLogout()">Выйти</button>
+    
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Поиск скинов..." onkeyup="search()">
+    </div>
+
+    <div id="userSection">
+        <button class="btn btn-login" id="loginBtn" onclick="toggleAuthModal()">ВОЙТИ</button>
+        
+        <div class="user-profile" id="profileDisplay" style="display:none;" onclick="handleLogout()">
+            <div class="user-info">
+                <span class="user-name" id="userNameDisplay">Username</span>
+                <span class="user-role">Залогинен</span>
+            </div>
+            <img src="" id="userAvatar" class="avatar" alt="Avatar">
         </div>
     </div>
 </header>
 
-<div id="authModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:var(--card-bg); padding:30px; border:2px solid var(--accent-color); border-radius:12px; z-index:1000; width: 300px;">
-    <h3 id="modalTitle">Вход</h3>
-    <input type="email" id="authEmail" placeholder="Email" style="width:90%; padding:10px; margin-bottom:10px; border-radius:5px;">
-    <input type="password" id="authPass" placeholder="Пароль" style="width:90%; padding:10px; margin-bottom:10px; border-radius:5px;">
-    <button class="btn btn-add" style="width:100%;" onclick="handleAuth()">Продолжить</button>
-    <p style="font-size:0.8rem; text-align:center; cursor:pointer; margin-top:10px;" onclick="switchAuthMode()" id="toggleAuthMode">Нет аккаунта? Регистрация</p>
-    <button onclick="toggleAuthModal()" style="position:absolute; top:5px; right:10px; background:none; border:none; color:white; cursor:pointer;">✕</button>
+<div style="max-width: 1200px; margin: 0 auto 10px; text-align: right;">
+    <button class="btn btn-admin" id="adminToggleBtn" style="display:none;" onclick="toggleAdmin()">+ Добавить пак</button>
 </div>
 
+<div class="admin-panel" id="adminPanel">
+    <h3>Новая публикация</h3>
+    <input type="text" id="pTitle" placeholder="Название">
+    <input type="text" id="pAuthor" placeholder="Автор">
+    <input type="text" id="pMainImg" placeholder="Прямая ссылка на фото">
+    <input type="text" id="pDownload" placeholder="Ссылка на скачивание">
+    <button class="btn btn-login" onclick="addPack()">Опубликовать</button>
+</div>
+
+<main class="content-wrapper" id="mainList">
+    </main>
+
+<div id="authModal">
+    <h2 id="modalTitle">Вход в систему</h2>
+    <input type="email" id="authEmail" placeholder="Email" style="width:100%; display:block; margin-bottom:10px;">
+    <input type="password" id="authPass" placeholder="Пароль" style="width:100%; display:block; margin-bottom:15px;">
+    <button class="btn btn-login" style="width:100%" onclick="handleAuth()">ПРОДОЛЖИТЬ</button>
+    <p id="authSwitch" onclick="switchAuthMode()" style="font-size:0.8rem; text-align:center; cursor:pointer; margin-top:15px;">Нет аккаунта? Регистрация</p>
+    <button class="btn" onclick="toggleAuthModal()" style="width:100%; margin-top:10px; background:none;">Закрыть</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    // ТВОИ ДАННЫЕ (НЕ ЗАБУДЬ ЗАПОЛНИТЬ!)
+    // === ТВОИ КЛЮЧИ SUPABASE ===
     const SUPABASE_URL = 'https://kiybpoixffrtgaaifqii.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpeWJwb2l4ZmZydGdhYWlmcWlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNjM3MzQsImV4cCI6MjA4OTkzOTczNH0.ET48HkFxIYFKlSdehsTE9JS1BtgzYS9_USlyuXKmbZ4';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let isSignUp = false;
 
-    // Проверка: залогинен ли пользователь?
-    async function checkUser() {
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        const adminPanelBtn = document.querySelector('.btn-toggle'); // Кнопка админки
-
+    // 1. ПРОВЕРКА ПОЛЬЗОВАТЕЛЯ И АВАТАРКА
+    async function initAuth() {
+        const { data: { user } } = await supabase.auth.getUser();
+        
         if (user) {
             document.getElementById('loginBtn').style.display = 'none';
-            document.getElementById('userEmail').style.display = 'inline';
-            document.getElementById('userEmail').innerText = user.email;
-            document.getElementById('logoutBtn').style.display = 'inline';
-            if(adminPanelBtn) adminPanelBtn.style.display = 'inline-block';
-        } else {
-            document.getElementById('loginBtn').style.display = 'inline';
-            document.getElementById('userEmail').style.display = 'none';
-            document.getElementById('logoutBtn').style.display = 'none';
-            if(adminPanelBtn) adminPanelBtn.style.display = 'none'; // Скрываем админку от гостей
+            document.getElementById('profileDisplay').style.display = 'flex';
+            document.getElementById('adminToggleBtn').style.display = 'inline-block';
+            
+            // Ставим почту как ник (до знака @)
+            const nickname = user.email.split('@')[0];
+            document.getElementById('userNameDisplay').innerText = nickname;
+            
+            // Генерируем аватарку по почте ( DiceBear )
+            document.getElementById('userAvatar').src = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${nickname}`;
         }
     }
 
-    // Вход / Регистрация
+    // 2. ВХОД / ВЫХОД
     async function handleAuth() {
         const email = document.getElementById('authEmail').value;
         const password = document.getElementById('authPass').value;
 
         if (isSignUp) {
-            const { error } = await supabaseClient.auth.signUp({ email, password });
-            if (error) alert("Ошибка регистрации: " + error.message);
-            else alert("Регистрация успешна! Теперь войдите.");
+            const { error } = await supabase.auth.signUp({ email, password });
+            if (error) alert(error.message); else alert("Проверьте почту или просто попробуйте войти!");
         } else {
-            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            if (error) alert("Ошибка входа: " + error.message);
-            else {
-                toggleAuthModal();
-                checkUser();
-            }
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) alert(error.message); else location.reload();
         }
     }
 
     async function handleLogout() {
-        await supabaseClient.auth.signOut();
-        checkUser();
-        location.reload(); // Перезагрузка для обновления прав
-    }
-
-    function toggleAuthModal() {
-        const m = document.getElementById('authModal');
-        m.style.display = m.style.display === 'none' ? 'block' : 'none';
+        if(confirm("Выйти из аккаунта?")) {
+            await supabase.auth.signOut();
+            location.reload();
+        }
     }
 
     function switchAuthMode() {
         isSignUp = !isSignUp;
-        document.getElementById('modalTitle').innerText = isSignUp ? "Регистрация" : "Вход";
-        document.getElementById('toggleAuthMode').innerText = isSignUp ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Регистрация";
+        document.getElementById('modalTitle').innerText = isSignUp ? "Регистрация" : "Вход в систему";
+        document.getElementById('authSwitch').innerText = isSignUp ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Регистрация";
     }
 
-    // Запуск проверки при загрузке
-    checkUser();
-    renderPacks(); 
-</script> 
+    function toggleAuthModal() {
+        const m = document.getElementById('authModal');
+        m.style.display = m.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // 3. РАБОТА С БАЗОЙ (РЕНДЕР)
+    async function renderSkins() {
+        const list = document.getElementById('mainList');
+        let { data: skins, error } = await supabase.from('skins').select('*').order('id', { ascending: false });
+
+        if (error) return;
+
+        list.innerHTML = '';
+        skins.forEach(pack => {
+            list.innerHTML += `
+                <div class="pack-card">
+                    <div class="gallery-side">
+                        <img src="${pack.main_img}" class="main-img">
+                        <img src="https://via.placeholder.com/200x120?text=1" class="sub-img">
+                        <img src="https://via.placeholder.com/200x120?text=2" class="sub-img">
+                        <img src="https://via.placeholder.com/200x120?text=3" class="sub-img">
+                        <img src="https://via.placeholder.com/200x120?text=4" class="sub-img">
+                        <img src="https://via.placeholder.com/200x120?text=5" class="sub-img">
+                        <img src="https://via.placeholder.com/200x120?text=6" class="sub-img">
+                    </div>
+                    <div class="info-side">
+                        <h2 class="pack-title">${pack.title}</h2>
+                        <div style="color:var(--meta-color); font-size:0.9rem; margin-bottom:20px;">
+                            Автор: <b>${pack.author}</b><br>
+                            Дата: <b>${pack.date || '2024'}</b>
+                        </div>
+                        <div style="color:#fbbf24; margin-bottom:15px;">⭐⭐⭐⭐⭐ 5.0</div>
+                        <a href="${pack.download_url}" class="download-btn">СКАЧАТЬ ZIP</a>
+                        <button class="btn" style="background:#ff4444; margin-top:10px; display:none;" id="del-${pack.id}" onclick="deletePack(${pack.id})">Удалить</button>
+                    </div>
+                </div>
+            `;
+            // Показывать кнопку удаления только залогиненным
+            supabase.auth.getUser().then(({data}) => {
+                if(data.user) document.getElementById(`del-${pack.id}`).style.display = 'block';
+            });
+        });
+    }
+
+    async function addPack() {
+        const { data: { user } } = await supabase.auth.getUser();
+        if(!user) return alert("Войдите!");
+
+        const title = document.getElementById('pTitle').value;
+        const author = document.getElementById('pAuthor').value;
+        const main_img = document.getElementById('pMainImg').value;
+        const download_url = document.getElementById('pDownload').value;
+
+        await supabase.from('skins').insert([{ title, author, main_img, download_url }]);
+        location.reload();
+    }
+
+    async function deletePack(id) {
+        if(confirm("Удалить пост?")) {
+            await supabase.from('skins').delete().eq('id', id);
+            renderSkins();
+        }
+    }
+
+    function toggleAdmin() {
+        const p = document.getElementById('adminPanel');
+        p.style.display = p.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function search() {
+        let f = document.getElementById('searchInput').value.toLowerCase();
+        let cards = document.getElementsByClassName('pack-card');
+        for (let c of cards) {
+            let t = c.querySelector('.pack-title').innerText.toLowerCase();
+            c.style.display = t.includes(f) ? "flex" : "none";
+        }
+    }
+
+    initAuth();
+    renderSkins();
+</script>
+
+</body>
+</html>
