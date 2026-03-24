@@ -1,327 +1,88 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS 1.6 Skins - Dashboard</title>
-    <style>
-        :root {
-            --bg-color: #0f0f0f;
-            --card-bg: #1a1a1a;
-            --text-color: #eeeeee;
-            --accent-color: #ff9d00;
-            --border-color: #333;
-            --meta-color: #888;
-        }
-
-        [data-theme="blue"] {
-            --bg-color: #050b18;
-            --card-bg: #111b2d;
-            --text-color: #e2e8f0;
-            --accent-color: #38bdf8;
-            --border-color: #1e293b;
-            --meta-color: #94a3b8;
-        }
-
-        [data-theme="white"] {
-            --bg-color: #f1f5f9;
-            --card-bg: #ffffff;
-            --text-color: #0f172a;
-            --accent-color: #2563eb;
-            --border-color: #cbd5e1;
-            --meta-color: #64748b;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            transition: 0.3s;
-        }
-
-        header {
-            max-width: 1200px;
-            margin: 0 auto 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        #searchInput {
-            padding: 12px;
-            width: 300px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
-            color: var(--text-color);
-        }
-
-        .theme-btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-
-        /* КОНТЕЙНЕР ПАКОВ */
-        .content-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-        }
-
-        /* КАРТОЧКА ПАКА */
-        .pack-card {
-            display: flex;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.6);
-        }
-
-        /* ГАЛЕРЕЯ (СЛЕВА) */
-        .gallery-side {
-            flex: 2.5; /* Широкая часть под фото */
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2px;
-            background: var(--border-color);
-        }
-
-        .main-img {
-            grid-column: span 3;
-            width: 100%;
-            height: 450px;
-            object-fit: cover;
-        }
-
-        .sub-img {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-        }
-
-        /* ПАНЕЛЬ ИНФО (СПРАВА) */
-        .info-side {
-            flex: 1; /* Узкая панель справа */
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            background: var(--card-bg);
-            border-left: 1px solid var(--border-color);
-        }
-
-        .pack-title {
-            font-size: 1.6rem;
-            font-weight: bold;
-            margin: 0 0 20px 0;
-            color: var(--text-color);
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 10px;
-        }
-
-        .meta-group {
-            margin-bottom: 25px;
-        }
-
-        .meta-item {
-            font-size: 1rem;
-            margin-bottom: 10px;
-            color: var(--meta-color);
-        }
-
-        .meta-item b {
-            color: var(--text-color);
-            display: block;
-            font-size: 1.1rem;
-            margin-top: 4px;
-        }
-
-        .rating-box {
-            font-size: 1.2rem;
-            color: #fbbf24;
-            margin-bottom: 30px;
-            background: rgba(251, 191, 36, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .download-btn {
-            background: var(--accent-color);
-            color: #000;
-            text-align: center;
-            padding: 18px;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.3s;
-            margin-top: auto; /* Прижимает кнопку к низу */
-        }
-
-        .download-btn:hover {
-            filter: brightness(1.2);
-            box-shadow: 0 0 15px var(--accent-color);
-        }
-
-        /* Для мобильных устройств */
-        @media (max-width: 900px) {
-            .pack-card { flex-direction: column; }
-            .info-side { border-left: none; border-top: 1px solid var(--border-color); }
-        }
-    </style>
-</head>
-<body>
-
 <header>
     <h1>CS 1.6 SKINS</h1>
     <div class="controls">
-        <input type="text" id="searchInput" placeholder="Поиск пака..." onkeyup="search()">
-        <button class="theme-btn" onclick="setTheme('white')" style="background:#fff; color:#000">Белый</button>
-        <button class="theme-btn" onclick="setTheme('blue')" style="background:#1e40af; color:#fff">Синий</button>
-        <button class="theme-btn" onclick="setTheme('black')" style="background:#333; color:#fff">Черный</button>
+        <input type="text" id="searchInput" placeholder="Поиск..." onkeyup="search()">
+        <div id="authSection" style="display: inline-block; margin-left: 10px;">
+            <button class="theme-btn" id="loginBtn" onclick="toggleAuthModal()">Войти</button>
+            <span id="userEmail" style="display:none; margin-right: 10px; font-weight: bold;"></span>
+            <button class="theme-btn" id="logoutBtn" style="display:none; background:#ff4444;" onclick="handleLogout()">Выйти</button>
+        </div>
     </div>
 </header>
 
-<div class="content-wrapper" id="mainList">
-
-    <div class="pack-card">
-        <div class="gallery-side">
-            <img src="https://via.placeholder.com/800x450/222/fff?text=MAIN+IMAGE" class="main-img" alt="Main">
-            <img src="https://via.placeholder.com/300x140/333/ccc?text=1" class="sub-img">
-            <img src="https://via.placeholder.com/300x140/333/ccc?text=2" class="sub-img">
-            <img src="https://via.placeholder.com/300x140/333/ccc?text=3" class="sub-img">
-            <img src="https://via.placeholder.com/300x140/444/ccc?text=4" class="sub-img">
-            <img src="https://via.placeholder.com/300x140/444/ccc?text=5" class="sub-img">
-            <img src="https://via.placeholder.com/300x140/444/ccc?text=6" class="sub-img">
-        </div>
-
-        <div class="info-side">
-            <h2 class="pack-title">Asiimov Pack v2.0</h2>
-            
-            <div class="meta-group">
-                <div class="meta-item">Автор: <b>Username</b></div>
-                <div class="meta-item">Дата: <b>17.02.2024</b></div>
-                <div class="meta-item">Размер: <b>15.4 MB</b></div>
-            </div>
-
-            <div class="rating-box">
-                Оценка: ⭐⭐⭐⭐⭐ 5/5
-            </div>
-
-            <a href="#" class="download-btn">Скачать сейчас</a>
-        </div>
-    </div>
-
+<div id="authModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:var(--card-bg); padding:30px; border:2px solid var(--accent-color); border-radius:12px; z-index:1000; width: 300px;">
+    <h3 id="modalTitle">Вход</h3>
+    <input type="email" id="authEmail" placeholder="Email" style="width:90%; padding:10px; margin-bottom:10px; border-radius:5px;">
+    <input type="password" id="authPass" placeholder="Пароль" style="width:90%; padding:10px; margin-bottom:10px; border-radius:5px;">
+    <button class="btn btn-add" style="width:100%;" onclick="handleAuth()">Продолжить</button>
+    <p style="font-size:0.8rem; text-align:center; cursor:pointer; margin-top:10px;" onclick="switchAuthMode()" id="toggleAuthMode">Нет аккаунта? Регистрация</p>
+    <button onclick="toggleAuthModal()" style="position:absolute; top:5px; right:10px; background:none; border:none; color:white; cursor:pointer;">✕</button>
 </div>
 
 <script>
-    function setTheme(t) { document.documentElement.setAttribute('data-theme', t); }
-
-    function search() {
-        let filter = document.getElementById('searchInput').value.toLowerCase();
-        let cards = document.getElementsByClassName('pack-card');
-        for (let card of cards) {
-            let title = card.querySelector('.pack-title').innerText.toLowerCase();
-            card.style.display = title.includes(filter) ? "flex" : "none";
-        }
-    }
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-    // ТВОИ ДАННЫЕ ИЗ SUPABASE (Вставь сюда свои!)
+    // ТВОИ ДАННЫЕ (НЕ ЗАБУДЬ ЗАПОЛНИТЬ!)
     const SUPABASE_URL = 'https://kiybpoixffrtgaaifqii.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpeWJwb2l4ZmZydGdhYWlmcWlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNjM3MzQsImV4cCI6MjA4OTkzOTczNH0.ET48HkFxIYFKlSdehsTE9JS1BtgzYS9_USlyuXKmbZ4';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 1. ЗАГРУЗКА ДАННЫХ ИЗ ОБЛАКА
-    async function renderPacks() {
-        const list = document.getElementById('mainList');
-        list.innerHTML = '<p style="text-align:center">Загрузка скинов из базы...</p>';
-        
-        // Берем данные из таблицы 'skins'
-        let { data: skins, error } = await supabase.from('skins').select('*').order('id', { ascending: false });
+    let isSignUp = false;
 
-        if (error) {
-            console.error(error);
-            list.innerHTML = 'Ошибка загрузки данных';
-            return;
-        }
+    // Проверка: залогинен ли пользователь?
+    async function checkUser() {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        const adminPanelBtn = document.querySelector('.btn-toggle'); // Кнопка админки
 
-        list.innerHTML = '';
-        skins.forEach((pack) => {
-            list.innerHTML += `
-                <div class="pack-card">
-                    <div class="gallery-side">
-                        <img src="${pack.main_img}" class="main-img">
-                        <img src="https://via.placeholder.com/200x120?text=1" class="sub-img">
-                        <img src="https://via.placeholder.com/200x120?text=2" class="sub-img">
-                        <img src="https://via.placeholder.com/200x120?text=3" class="sub-img">
-                        <img src="https://via.placeholder.com/200x120?text=4" class="sub-img">
-                        <img src="https://via.placeholder.com/200x120?text=5" class="sub-img">
-                        <img src="https://via.placeholder.com/200x120?text=6" class="sub-img">
-                    </div>
-                    <div class="info-side">
-                        <h2 class="pack-title">${pack.title}</h2>
-                        <div class="meta-group">
-                            <div class="meta-item">Автор: <b>${pack.author}</b></div>
-                            <div class="meta-item">Дата: <b>${pack.date}</b></div>
-                        </div>
-                        <div style="color:#fbbf24; margin-bottom:20px;">Оценка: ⭐⭐⭐⭐⭐ ${pack.rating}/5</div>
-                        <a href="${pack.download_url}" class="download-btn">СКАЧАТЬ</a>
-                        <button class="btn btn-delete" onclick="deletePack(${pack.id})">УДАЛИТЬ ПОСТ</button>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    // 2. ДОБАВЛЕНИЕ В ОБЛАКО
-    async function addPack() {
-        const title = document.getElementById('pTitle').value;
-        const author = document.getElementById('pAuthor').value;
-        const date = document.getElementById('pDate').value;
-        const main_img = document.getElementById('pMainImg').value || 'https://via.placeholder.com/800x450';
-        const download_url = document.getElementById('pDownload').value || '#';
-
-        const { error } = await supabase
-            .from('skins')
-            .insert([{ title, author, date, main_img, download_url }]);
-
-        if (error) alert("Ошибка при сохранении!");
-        else {
-            renderPacks();
-            toggleAdmin();
+        if (user) {
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('userEmail').style.display = 'inline';
+            document.getElementById('userEmail').innerText = user.email;
+            document.getElementById('logoutBtn').style.display = 'inline';
+            if(adminPanelBtn) adminPanelBtn.style.display = 'inline-block';
+        } else {
+            document.getElementById('loginBtn').style.display = 'inline';
+            document.getElementById('userEmail').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'none';
+            if(adminPanelBtn) adminPanelBtn.style.display = 'none'; // Скрываем админку от гостей
         }
     }
 
-    // 3. УДАЛЕНИЕ ИЗ ОБЛАКА
-    async function deletePack(id) {
-        if(confirm("Удалить этот пак навсегда?")) {
-            const { error } = await supabase.from('skins').delete().eq('id', id);
-            if (error) alert("Ошибка при удалении!");
-            else renderPacks();
+    // Вход / Регистрация
+    async function handleAuth() {
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPass').value;
+
+        if (isSignUp) {
+            const { error } = await supabaseClient.auth.signUp({ email, password });
+            if (error) alert("Ошибка регистрации: " + error.message);
+            else alert("Регистрация успешна! Теперь войдите.");
+        } else {
+            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) alert("Ошибка входа: " + error.message);
+            else {
+                toggleAuthModal();
+                checkUser();
+            }
         }
     }
 
-    function toggleAdmin() {
-        const p = document.getElementById('adminPanel');
-        p.style.display = p.style.display === 'block' ? 'none' : 'block';
+    async function handleLogout() {
+        await supabaseClient.auth.signOut();
+        checkUser();
+        location.reload(); // Перезагрузка для обновления прав
     }
 
-    renderPacks(); // Запуск при открытии сайта
-</script>
-</body>
-</html>
+    function toggleAuthModal() {
+        const m = document.getElementById('authModal');
+        m.style.display = m.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function switchAuthMode() {
+        isSignUp = !isSignUp;
+        document.getElementById('modalTitle').innerText = isSignUp ? "Регистрация" : "Вход";
+        document.getElementById('toggleAuthMode').innerText = isSignUp ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Регистрация";
+    }
+
+    // Запуск проверки при загрузке
+    checkUser();
+    renderPacks(); 
+</script> 
